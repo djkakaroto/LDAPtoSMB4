@@ -13,8 +13,12 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    ufguser.cpp \
+    atributos.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    ufguser.h \
+    atributos.h
 
 FORMS    += mainwindow.ui

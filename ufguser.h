@@ -17,9 +17,6 @@ public:
     QString getSiape() const;
     void setSiape(const QString &value);
 
-    QString getMatricula() const;
-    void setMatricula(const QString &value);
-
     QString getTelefone() const;
     void setTelefone(const QString &value);
 
@@ -35,11 +32,16 @@ public:
     QString getEmail() const;
     void setEmail(const QString &value);
 
+    void limpar();
+
+    QString getCodigo() const;
+    void setCodigo(const QString &value);
+
 private:
     QString nome;
     QString cpf;
     QString siape;
-    QString matricula;
+    QString codigo;
     QString telefone;
     QString lotacao;
     QString tipoVinculo;

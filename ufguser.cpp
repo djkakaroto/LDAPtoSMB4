@@ -2,7 +2,15 @@
 
 UFGUser::UFGUser()
 {
-
+    nome = "";
+    cpf = "";
+    siape = "";
+    codigo = "";
+    telefone = "";
+    lotacao = "";
+    tipoVinculo = "";
+    loginUnico = "";
+    email = "";
 }
 
 QString UFGUser::getNome() const
@@ -33,16 +41,6 @@ QString UFGUser::getSiape() const
 void UFGUser::setSiape(const QString &value)
 {
     siape = value;
-}
-
-QString UFGUser::getMatricula() const
-{
-    return matricula;
-}
-
-void UFGUser::setMatricula(const QString &value)
-{
-    matricula = value;
 }
 
 QString UFGUser::getTelefone() const
@@ -93,4 +91,27 @@ QString UFGUser::getEmail() const
 void UFGUser::setEmail(const QString &value)
 {
     email = value;
+}
+
+void UFGUser::limpar()
+{
+    nome = "";
+    cpf = "";
+    siape = "";
+    codigo = "";
+    telefone = "";
+    lotacao = "";
+    tipoVinculo = "";
+    loginUnico = "";
+    email = "";
+}
+
+QString UFGUser::getCodigo() const
+{
+    return codigo;
+}
+
+void UFGUser::setCodigo(const QString &value)
+{
+    codigo = value;
 }
