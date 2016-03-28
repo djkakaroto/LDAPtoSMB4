@@ -26,7 +26,7 @@
    <string>LDAPtoSMB4 v.0.1</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QTableWidget" name="tableWidget">
+   <widget class="QTableView" name="tableView">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -38,51 +38,6 @@
     <property name="styleSheet">
      <string notr="true">background-color: rgb(231, 255, 202);</string>
     </property>
-    <column>
-     <property name="text">
-      <string>NOME</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>CPF</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>SIAPE</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>MATRICULA</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>TELEFONE</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>LOTAÇÃO</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>TA/ALUNO/PROF</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>LOGIN ÚNICO</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>E-MAIL</string>
-     </property>
-    </column>
    </widget>
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">

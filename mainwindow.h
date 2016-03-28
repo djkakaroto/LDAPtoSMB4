@@ -30,13 +30,12 @@ private:
     QString pathFileLDIF;
     Atributos *listAtributos;
     UFGUser usuario;
-    // QList <UFGUser> listUsuario;
-    int userCount;
+    QList <UFGUser> listUsuario;
     int flagEmployee;
     int flagLotacao;
 
 //Metodos
-    void inserirDadosTabela( QList <UFGUser> value );
+    void inserirDadosTabela( const QList <UFGUser> &value );
     void lerAtributos();
     void filtrarDados(QStringList value);
 
