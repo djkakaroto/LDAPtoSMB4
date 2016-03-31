@@ -44,6 +44,146 @@ void MainWindow::on_btnEscolherLDIF_clicked()
 void MainWindow::on_btnExportarSMB4_clicked()
 {
 
+    if ( ui->txtRealm->text().isEmpty() || ui->txtRealm->text().isNull() ){
+        QMessageBox::information(this, "REALM", "Favor informar o REALM/DOMINIO para continuar conforme o exemplo: DC=dominio,DC=net,DC=local" );
+        ui->txtRealm->setFocus();
+    }
+
+    QFile file ( QApplication::applicationDirPath() + "/exportSMB.ldif" );
+
+    if(!file.open( QIODevice::WriteOnly | QIODevice::Text ))
+        return;
+
+    QTextStream out ( &file );
+
+    // Definindo a codificação do arquivo para UTF-8
+    out.setCodec("UTF-8");
+
+    UFGUser smbUser;
+    QString codigo, cpf, nome, vinculo, lotacao, loginUnico, email, telefone, siape = "";
+    QString realm, dominioKrb, dnRealm = "";
+    QStringList dominio;
+
+    if ( ui->txtRealm->text() != "" ){
+        realm = ui->txtRealm->text().toLower();
+
+        // Verifica a composição com DOMINIO/REALM
+        if ( realm.contains(".") ){
+            dominio = realm.split(".");
+            dominioKrb = realm;
+
+            switch ( dominio.length() ) {
+            case 1:
+                dnRealm = "DC=" + dominio.at(0);
+                break;
+            case 2:
+                dnRealm = "DC=" + dominio.at(0) + "," + "DC=" + dominio.at(1);
+                break;
+            case 3:
+                dnRealm = "DC=" + dominio.at(0) + "," + "DC=" + dominio.at(1) + "," + "DC=" + dominio.at(2);
+                break;
+            case 4:
+                dnRealm = "DC=" + dominio.at(0) + "," + "DC=" + dominio.at(1) + "," + "DC=" + dominio.at(2) + "," + "DC=" + dominio.at(3);
+                break;
+            default:
+                //dnRealm = "DC=" + dominio.at(0);
+                break;
+            }
+
+        }else{
+            dnRealm = realm;
+            realm = realm.remove( "dc=" );
+            dominio = realm.split(",");
+
+            switch ( dominio.length() ) {
+            case 1:
+                dominioKrb = dominio.at(0);
+                break;
+            case 2:
+                dominioKrb = dominio.at(0) + "." + dominio.at(1);
+                break;
+            case 3:
+                dominioKrb = dominio.at(0) + "." + dominio.at(1) + "." + dominio.at(2);
+                break;
+            case 4:
+                dominioKrb = dominio.at(0) + "." + dominio.at(1) + "." + dominio.at(2) + "." + dominio.at(3);
+                break;
+            default:
+                //dominioKrb = dominio.at(0);
+                break;
+            }
+
+        }
+    }
+
+    for ( int linha = 0; linha < listUsuario.length(); linha++ ){
+
+        smbUser = listUsuario.at( linha );
+
+        if ( smbUser.getNome() != "" ){
+            nome = smbUser.getNome();
+            out << "dn: " << "CN=" << nome << ",CN=Users," << dnRealm << "\n";
+            out << "objectClass: top\n";
+            out << "objectClass: person\n";
+            out << "objectClass: organizationalPerson\n";
+            out << "objectClass: user\n";
+            out << "cn: " + nome << "\n";
+            out << "name: " + nome << "\n";
+            out << "displayName: " + nome << "\n";
+        }
+
+        if (smbUser.getCodigo() != "" ){
+            codigo = smbUser.getCodigo();
+            out << "info: " << "Código: " + codigo;
+        }
+
+        if ( smbUser.getCpf() != "" ){
+            cpf = smbUser.getCpf();
+            out << " CPF: " + cpf << "\n";
+        }
+
+        if ( smbUser.getTipoVinculo() != "" ){
+            vinculo = smbUser.getTipoVinculo();
+            out << "description: " + vinculo << "\n";
+        }
+
+        if ( smbUser.getLotacao() != "" ){
+            lotacao = smbUser.getLotacao();
+            out << "physicalDeliveryOfficeName: " + lotacao << "\n";
+        }
+
+        out << "objectCategory: " << "CN=Person,CN=Schema,CN=Configuration," << dnRealm << "\n";
+
+        if ( smbUser.getLoginUnico() != "" ){
+            loginUnico = smbUser.getLoginUnico();
+            out << "sAMAccountName: " + loginUnico << "\n";
+            out << "userPrincipalName: " + loginUnico << "@" << dominioKrb << "\n";
+        }
+
+        out << "userAccountControl: 512" << "\n";
+        out << "distinguishedName: " << "CN=" << nome << ",CN=Users," << dnRealm << "\n";
+
+        if ( smbUser.getEmail() != "" ){
+            email = smbUser.getEmail();
+            out << "mail: " + email << "\n";
+        }
+
+        if ( smbUser.getTelefone() != "" ){
+            telefone = smbUser.getTelefone();
+            out << "telephoneNumber: " + telefone << "\n";
+        }
+
+        if ( smbUser.getSiape() != "" ){
+            siape = smbUser.getSiape();
+            //out << "siape: " + siape << "\n";
+        }
+
+        out << ""<< endl;
+
+    }
+
+    QMessageBox::information(this, "Resultado", "Arquivo salvo com sucesso em: " + QApplication::applicationDirPath() + "/exportSMB.ldif" );
+    file.close();
 }
 
 void MainWindow::on_btnProcessarLDIF_clicked()
@@ -246,6 +386,7 @@ void MainWindow::filtrarDados(QStringList value) {
             }
         }
     }
+
     // Login Único
     if ( value.at(0) == "uid" ){
         aux = value.at(1);
@@ -254,6 +395,7 @@ void MainWindow::filtrarDados(QStringList value) {
             usuario.setLoginUnico( aux );
         }
     }
+
     // E-mail
     if ( value.at(0) == "mail" ){
         aux = value.at(1);
