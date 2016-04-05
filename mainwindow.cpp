@@ -142,16 +142,6 @@ void MainWindow::on_btnExportarSMB4_clicked()
                     out << "displayName: " + nome << "\n";
                 }
 
-                if (smbUser.getCodigo() != "" ){
-                    codigo = smbUser.getCodigo();
-                    out << "info: " << "Código: " + codigo;
-                }
-
-                if ( smbUser.getCpf() != "" ){
-                    cpf = smbUser.getCpf();
-                    out << " CPF: " + cpf << "\n";
-                }
-
                 if ( smbUser.getTipoVinculo() != "" ){
                     vinculo = smbUser.getTipoVinculo();
                     out << "description: " + vinculo << "\n";
@@ -181,7 +171,19 @@ void MainWindow::on_btnExportarSMB4_clicked()
                     //out << "siape: " + siape << "\n";
                 }
 
-                out << ""<< endl;
+                if ( smbUser.getCpf() != "" ){
+                    cpf = smbUser.getCpf();
+                    out << "info: " << "CPF: " + cpf;
+                }
+
+                if (smbUser.getCodigo() != "" ){
+                    codigo = smbUser.getCodigo();
+                    out << " Código: " + codigo << "\n";
+                }else{
+                    out << "\n";
+                }
+
+                out << "" << endl;
 
             }
 
@@ -398,7 +400,7 @@ void MainWindow::filtrarDados(QStringList value) {
 
 void MainWindow::inserirDadosTabela( const QList <UFGUser> &value ){
     UFGUser user;
-    QStandardItemModel *model = new QStandardItemModel(value.length(),9,this);
+    QStandardItemModel *model = new QStandardItemModel(value.length(),7,this);
 
     if ( listAtributos->getCodigo() ){
         model->setHorizontalHeaderItem(0, new QStandardItem(QString("Código")));
@@ -428,11 +430,11 @@ void MainWindow::inserirDadosTabela( const QList <UFGUser> &value ){
         model->setHorizontalHeaderItem(6, new QStandardItem(QString("E-mail")));
     }
 
-    if ( listAtributos->getTelefone() || listAtributos->getTelefone() == false ){
+    if ( listAtributos->getTelefone() ){
         model->setHorizontalHeaderItem(7, new QStandardItem(QString("Telefone")));
     }
 
-    if ( listAtributos->getSiape() || listAtributos->getSiape() == false ){
+    if ( listAtributos->getSiape() ){
         model->setHorizontalHeaderItem(8, new QStandardItem(QString("SIAPE")));
     }
 
@@ -466,10 +468,14 @@ void MainWindow::inserirDadosTabela( const QList <UFGUser> &value ){
                 model->setItem( linha, col, new QStandardItem(QString ( user.getEmail() ) ) );
                 break;
             case 7:
-                model->setItem( linha, col, new QStandardItem(QString ( user.getTelefone() ) ) );
+                if ( user.getTelefone() != "" ){
+                    model->setItem( linha, col, new QStandardItem(QString ( user.getTelefone() ) ) );
+                }
                 break;
             case 8:
-                model->setItem( linha, col, new QStandardItem(QString ( user.getSiape() ) ) );
+                if ( user.getSiape() != "" ){
+                    model->setItem( linha, col, new QStandardItem(QString ( user.getSiape() ) ) );
+                }
                 break;
             default:
                 break;
@@ -478,5 +484,14 @@ void MainWindow::inserirDadosTabela( const QList <UFGUser> &value ){
     }
 
     ui->tableView->setModel(model);
+    ui->tableView->setColumnWidth(0, 70);
+    ui->tableView->setColumnWidth(1, 100);
+    ui->tableView->setColumnWidth(2, 310);
+    ui->tableView->setColumnWidth(3, 130);
+    ui->tableView->setColumnWidth(4, 150);
+    ui->tableView->setColumnWidth(5, 150);
+    ui->tableView->setColumnWidth(6, 200);
+
+    //ui->tableView->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
 
 }
