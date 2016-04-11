@@ -25,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->chkLoginUnico->setChecked( true );
     ui->chkEmail->setChecked( true );
 
+    listAtributos = new Atributos();
+
 }
 
 MainWindow::~MainWindow()
@@ -44,7 +46,7 @@ void MainWindow::on_btnEscolherLDIF_clicked()
 void MainWindow::on_btnExportarSMB4_clicked()
 {
     QString pathExportLDIF;
-    QFile file;
+    QFile fileOut;
 
     if ( ui->txtRealm->text().isEmpty() || ui->txtRealm->text().isNull() ){
         QMessageBox::information(this, "Informe o REALM/DOMINIO", "Favor digitar o REALM/DOMINIO de acordo com o exemplo abaixo:\n\n DC=dominio,DC=net,DC=local\n ou\n dominio.net.local" );
@@ -55,12 +57,12 @@ void MainWindow::on_btnExportarSMB4_clicked()
         pathExportLDIF = QFileDialog::getSaveFileName( this, "Escolha o local para salvar o arquivo." );
 
         if ( ! pathExportLDIF.isNull() ){
-            file.setFileName( pathExportLDIF );
+            fileOut.setFileName( pathExportLDIF );
 
-            if(!file.open( QIODevice::WriteOnly | QIODevice::Text ))
+            if(!fileOut.open( QIODevice::WriteOnly | QIODevice::Text ))
                 return;
 
-            QTextStream out ( &file );
+            QTextStream out ( &fileOut );
 
             // Definindo a codificação do arquivo para UTF-8
             out.setCodec("UTF-8");
@@ -191,7 +193,7 @@ void MainWindow::on_btnExportarSMB4_clicked()
         }
 
     }
-    file.close();
+    fileOut.close();
 }
 
 void MainWindow::on_btnProcessarLDIF_clicked()
@@ -206,12 +208,12 @@ void MainWindow::on_btnProcessarLDIF_clicked()
 
         lerAtributos();
 
-        QFile file ( pathFileLDIF );
+        QFile fileIn ( pathFileLDIF );
 
-        if(!file.open( QIODevice::ReadOnly | QIODevice::Text ))
+        if(!fileIn.open( QIODevice::ReadOnly | QIODevice::Text ))
             return;
 
-        QTextStream in( &file );
+        QTextStream in( &fileIn );
 
         // Definindo a codificação do arquivo para UTF-8
         in.setCodec("UTF-8");
@@ -256,7 +258,7 @@ void MainWindow::on_btnProcessarLDIF_clicked()
         inserirDadosTabela( listUsuario );
 
         // Fecha o arquivo LDIF
-        file.close();
+        fileIn.close();
     }
 
 }
@@ -483,6 +485,7 @@ void MainWindow::inserirDadosTabela( const QList <UFGUser> &value ){
         }
     }
 
+    // Configurando o tamanho da coluna
     ui->tableView->setModel(model);
     ui->tableView->setColumnWidth(0, 70);
     ui->tableView->setColumnWidth(1, 100);
@@ -491,7 +494,5 @@ void MainWindow::inserirDadosTabela( const QList <UFGUser> &value ){
     ui->tableView->setColumnWidth(4, 150);
     ui->tableView->setColumnWidth(5, 150);
     ui->tableView->setColumnWidth(6, 200);
-
-    //ui->tableView->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
 
 }
